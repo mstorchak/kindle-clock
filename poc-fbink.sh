@@ -2,7 +2,7 @@
 #shellcheck shell=dash
 
 # fonts
-[ "
+: "
 /mnt/us/fonts/NotoSans-Bold.ttf
 /mnt/us/fonts/NotoSans-BoldItalic.ttf
 /mnt/us/fonts/NotoSans-Italic.ttf
@@ -13,7 +13,7 @@
 /mnt/us/fonts/NotoSerif-BoldItalic.ttf
 /mnt/us/fonts/NotoSerif-Italic.ttf
 /mnt/us/fonts/NotoSerif-Regular.ttf
-" ]
+"
 
 
 dow() {
@@ -69,7 +69,7 @@ cal() {
 
 	day1=$(date -d "${MONTH}01${YEAR}" +%u)
 
-	i=0; d=0; while [ $d -lt $last ]; do d=$((i-day1+2)); [ $((d - _DAY)) -eq 0 ] && c='**' || c=''; [ $d -le 0 ] && echo -n "    " || printf "%s%2s%s  " "$c" "$d" "$c"; [ $((i%7)) -eq 6 ] && echo; i=$((i+1)); done; echo
+	i=0; d=0; while [ $d -lt $last ]; do d=$((i-day1+2)); [ $((d - DAY)) -eq 0 ] && c='**' || c=''; [ $d -le 0 ] && echo -n "    " || printf "%s%2s%s  " "$c" "$d" "$c"; [ $((i%7)) -eq 6 ] && echo; i=$((i+1)); done; echo
 }
 
 _fbink() {
@@ -79,17 +79,14 @@ _fbink() {
 tmp=$(mktemp /tmp/kindle-cal.XXXXXX)
 trap 'rm -rf $tmp' 0
 
-date "+%Y %m %d %-d %u %H:%M" > "$tmp"
-read -r YEAR MONTH DAY _DAY DOW TIME < "$tmp"
-DOW=$(dow $DOW)
-
-display="/usr/local/bin/java -cp /opt/amazon/ebook/lib/portability-impl.jar com.lab126.util.misc.DisplayFile"
-
+date "+%Y %m %-d %u %H:%M" > "$tmp"
+read -r YEAR MONTH DAY DOW TIME < "$tmp"
+DOW=$(dow "$DOW")
 
 fonts="regular=/mnt/us/fonts/NotoSerif-Regular.ttf,bold=/mnt/us/fonts/NotoSerif-Bold.ttf,italic=/mnt/us/fonts/NotoSerif-Italic.ttf,bolditalic=/mnt/us/fonts/NotoSerif-BoldItalic.ttf"
 _fbink -c
 _fbink -t $fonts,px=200,format,top=0 -m "$TIME"
-_fbink -t $fonts,px=70,format,top=180 -m "$_DAY $(mon $MONTH) $YEAR р."
+_fbink -t $fonts,px=70,format,top=180 -m "$DAY $(mon "$MONTH") $YEAR р."
 _fbink -t $fonts,px=70,format,top=250 -m "$DOW"
 _fbink -B GRAYB -k top=500,left=430,width=170,height=300
 
@@ -100,4 +97,4 @@ fonts="regular=/mnt/us/fonts/NotoSansMono-Regular.ttf,bold=/mnt/us/fonts/NotoSan
 } | _fbink -O -t $fonts,px=50,format,top=500,left=6
 
 
-fbink -s
+fbink -q -s
