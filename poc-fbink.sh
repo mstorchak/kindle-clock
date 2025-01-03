@@ -72,6 +72,10 @@ cal() {
 	i=0; d=0; while [ $d -lt $last ]; do d=$((i-day1+2)); [ $((d - _DAY)) -eq 0 ] && c='**' || c=''; [ $d -le 0 ] && echo -n "    " || printf "%s%2s%s  " "$c" "$d" "$c"; [ $((i%7)) -eq 6 ] && echo; i=$((i+1)); done; echo
 }
 
+_fbink() {
+	fbink -q -b "$@"
+}
+
 tmp=$(mktemp /tmp/kindle-cal.XXXXXX)
 trap 'rm -rf $tmp' 0
 
@@ -83,16 +87,17 @@ display="/usr/local/bin/java -cp /opt/amazon/ebook/lib/portability-impl.jar com.
 
 
 fonts="regular=/mnt/us/fonts/NotoSerif-Regular.ttf,bold=/mnt/us/fonts/NotoSerif-Bold.ttf,italic=/mnt/us/fonts/NotoSerif-Italic.ttf,bolditalic=/mnt/us/fonts/NotoSerif-BoldItalic.ttf"
-fbink -q -b -c
-fbink -q -b -t $fonts,px=200,format,top=0 -m "$TIME"
-fbink -q -b -t $fonts,px=70,format,top=180 -m "$_DAY $(mon $MONTH) $YEAR р."
-fbink -q -b -t $fonts,px=70,format,top=250 -m "$DOW"
-fbink -q -b -B GRAYB -k top=500,left=430,width=170,height=300
+_fbink -c
+_fbink -t $fonts,px=200,format,top=0 -m "$TIME"
+_fbink -t $fonts,px=70,format,top=180 -m "$_DAY $(mon $MONTH) $YEAR р."
+_fbink -t $fonts,px=70,format,top=250 -m "$DOW"
+_fbink -B GRAYB -k top=500,left=430,width=170,height=300
 
 fonts="regular=/mnt/us/fonts/NotoSansMono-Regular.ttf,bold=/mnt/us/fonts/NotoSansMono-Bold.ttf"
 {
 	echo "Пн  Вт  Ср  Чт  Пт  Сб  Нд"
 	cal
-} | fbink -q -b -O -t $fonts,px=50,format,top=500,left=6
+} | _fbink -O -t $fonts,px=50,format,top=500,left=6
+
+
 fbink -s
-exit 0
