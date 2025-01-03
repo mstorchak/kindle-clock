@@ -30,6 +30,25 @@ dow() {
 	echo "$d"
 }
 
+mon() {
+	local m=""
+	case "$1" in
+		01) m="січня" ;;
+		02) m="лютого" ;;
+		03) m="березня" ;;
+		04) m="квітня" ;;
+		05) m="травня" ;;
+		06) m="червня" ;;
+		07) m="липня" ;;
+		08) m="серпня" ;;
+		09) m="вересня" ;;
+		10) m="жовтня" ;;
+		11) m="листопада" ;;
+		12) m="грудня" ;;
+	esac
+	echo "$m"
+}
+
 lpad() {
 	local size=$1 str=$2 pad
 	pad=$(((size + ${#str})/2))
@@ -50,7 +69,7 @@ cal() {
 
 	day1=$(date -d "${MONTH}01${YEAR}" +%u)
 
-	i=0; d=0; while [ $d -lt $last ]; do d=$((i-day1+2)); [ $((d - _DAY)) -eq 0 ] && c='**' || c=''; [ $d -le 0 ] && echo -n "    " || printf "%s%3s%s " "$c" "$d" "$c"; [ $((i%7)) -eq 6 ] && echo; i=$((i+1)); done; echo
+	i=0; d=0; while [ $d -lt $last ]; do d=$((i-day1+2)); [ $((d - _DAY)) -eq 0 ] && c='**' || c=''; [ $d -le 0 ] && echo -n "    " || printf "%s%2s%s  " "$c" "$d" "$c"; [ $((i%7)) -eq 6 ] && echo; i=$((i+1)); done; echo
 }
 
 tmp=$(mktemp /tmp/kindle-cal.XXXXXX)
@@ -64,26 +83,16 @@ display="/usr/local/bin/java -cp /opt/amazon/ebook/lib/portability-impl.jar com.
 
 
 fonts="regular=/mnt/us/fonts/NotoSerif-Regular.ttf,bold=/mnt/us/fonts/NotoSerif-Bold.ttf,italic=/mnt/us/fonts/NotoSerif-Italic.ttf,bolditalic=/mnt/us/fonts/NotoSerif-BoldItalic.ttf"
-fbink -c -f -q
-fbink -q -t $fonts,px=200,format,top=0 -m "$TIME"
-fbink -q -t $fonts,px=70,format,top=220 -m "$DOW"
-fbink -q -t $fonts,px=70,format,top=300 -m "$DAY-$MONTH-$YEAR"
+fbink -q -b -c
+fbink -q -b -t $fonts,px=200,format,top=0 -m "$TIME"
+fbink -q -b -t $fonts,px=70,format,top=180 -m "$_DAY $(mon $MONTH) $YEAR р."
+fbink -q -b -t $fonts,px=70,format,top=250 -m "$DOW"
+fbink -q -b -B GRAYB -k top=500,left=430,width=170,height=300
 
 fonts="regular=/mnt/us/fonts/NotoSansMono-Regular.ttf,bold=/mnt/us/fonts/NotoSansMono-Bold.ttf"
 {
-	echo Mon Tue Wed Thu Fri Sat Sun
+	echo "Пн  Вт  Ср  Чт  Пт  Сб  Нд"
 	cal
-} | fbink -q -t $fonts,px=45,format,top=400,left=30
+} | fbink -q -b -O -t $fonts,px=50,format,top=500,left=6
+fbink -s
 exit 0
-
-cat <<EOF | $display -
-<Monospaced 156>
-$TIME
-<Monospaced 48>
-$(lpad 17 "$DOW")
-$(lpad 17 "$DAY-$MONTH-$YEAR")
-
-<Monospaced 30>
-Mon Tue Wed Thu Fri Sat Sun
-$(cal)
-EOF
