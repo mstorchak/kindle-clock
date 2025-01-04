@@ -70,7 +70,7 @@ _fbink() {
 }
 
 tmp=$(mktemp /tmp/kindle-cal.XXXXXX)
-trap 'rm -rf $tmp' 0 INT TERM
+trap 'rm -f $tmp' 0 INT TERM
 
 _fbink -c -f
 
