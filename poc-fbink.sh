@@ -84,16 +84,15 @@ while :; do
 
 	fonts="regular=/mnt/us/fonts/NotoSerif-Regular.ttf,bold=/mnt/us/fonts/NotoSerif-Bold.ttf,italic=/mnt/us/fonts/NotoSerif-Italic.ttf,bolditalic=/mnt/us/fonts/NotoSerif-BoldItalic.ttf"
 	_fbink -c
-	_fbink -t $fonts,px=270,style=BOLD,top=0 -m "$TIME"
+	_fbink -t $fonts,px=270,style=BOLD -m "$TIME"
 	_fbink -t $fonts,px=70,top=230 -m "$DAY $(mon "$MONTH") $YEAR р."
 	_fbink -t $fonts,px=70,top=300 -m "$DOW"
-	_fbink -B GRAYB -k top=500,left=430,width=170,height=300
 
 	fonts="regular=/mnt/us/fonts/NotoSansMono-Regular.ttf,bold=/mnt/us/fonts/NotoSansMono-Bold.ttf"
-	{
-		echo "Пн  Вт  Ср  Чт  Пт  Сб  Нд"
-		cal
-	} | _fbink -O -t $fonts,px=50,format,top=500,left=6
+	_fbink -B GRAYB -k top=500,left=430,width=170,height=300
+	_fbink -B GRAY2 -k top=500,left=0,width=600,height=52
+	_fbink -B GRAY2 -C WHITE -t $fonts,px=50,format,top=500,left=6 "Пн  Вт  Ср  Чт  Пт  Сб  Нд"
+	cal | _fbink -O -t $fonts,px=50,format,top=550,left=6
 
 
 	fbink -q -s
