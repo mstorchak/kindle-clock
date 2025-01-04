@@ -15,7 +15,6 @@
 /mnt/us/fonts/NotoSerif-Regular.ttf
 "
 
-
 dow() {
 	local d=""
 	case "$1" in
@@ -47,12 +46,6 @@ mon() {
 		12) m="грудня" ;;
 	esac
 	echo "$m"
-}
-
-lpad() {
-	local size=$1 str=$2 pad
-	pad=$(((size + ${#str})/2))
-	printf "%${pad}s" "$str"
 }
 
 cal() {
