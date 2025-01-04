@@ -70,7 +70,7 @@ _fbink() {
 }
 
 tmp=$(mktemp /tmp/kindle-cal.XXXXXX)
-trap 'rm -rf $tmp' 0
+trap 'rm -rf $tmp' 0 INT TERM
 
 while :; do
 	sleep "$((60-$(date +%s)%60))"
