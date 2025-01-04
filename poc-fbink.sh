@@ -72,8 +72,12 @@ _fbink() {
 tmp=$(mktemp /tmp/kindle-cal.XXXXXX)
 trap 'rm -rf $tmp' 0 INT TERM
 
+_fbink -c -f
+
+firsttime=y
 while :; do
-	sleep "$((60-$(date +%s)%60))"
+	[ "$firsttime" ] && firsttime='' || sleep "$((60-$(date +%s)%60))"
+
 	date "+%Y %m %-d %u %H:%M" > "$tmp"
 	read -r YEAR MONTH DAY DOW TIME < "$tmp"
 	DOW=$(dow "$DOW")
