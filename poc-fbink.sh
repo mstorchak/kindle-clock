@@ -79,22 +79,25 @@ _fbink() {
 tmp=$(mktemp /tmp/kindle-cal.XXXXXX)
 trap 'rm -rf $tmp' 0
 
-date "+%Y %m %-d %u %H:%M" > "$tmp"
-read -r YEAR MONTH DAY DOW TIME < "$tmp"
-DOW=$(dow "$DOW")
+while :; do
+	sleep "$((60-$(date +%s)%60))"
+	date "+%Y %m %-d %u %H:%M" > "$tmp"
+	read -r YEAR MONTH DAY DOW TIME < "$tmp"
+	DOW=$(dow "$DOW")
 
-fonts="regular=/mnt/us/fonts/NotoSerif-Regular.ttf,bold=/mnt/us/fonts/NotoSerif-Bold.ttf,italic=/mnt/us/fonts/NotoSerif-Italic.ttf,bolditalic=/mnt/us/fonts/NotoSerif-BoldItalic.ttf"
-_fbink -c
-_fbink -t $fonts,px=270,style=BOLD,top=0 -m "$TIME"
-_fbink -t $fonts,px=70,top=230 -m "$DAY $(mon "$MONTH") $YEAR р."
-_fbink -t $fonts,px=70,top=300 -m "$DOW"
-_fbink -B GRAYB -k top=500,left=430,width=170,height=300
+	fonts="regular=/mnt/us/fonts/NotoSerif-Regular.ttf,bold=/mnt/us/fonts/NotoSerif-Bold.ttf,italic=/mnt/us/fonts/NotoSerif-Italic.ttf,bolditalic=/mnt/us/fonts/NotoSerif-BoldItalic.ttf"
+	_fbink -c
+	_fbink -t $fonts,px=270,style=BOLD,top=0 -m "$TIME"
+	_fbink -t $fonts,px=70,top=230 -m "$DAY $(mon "$MONTH") $YEAR р."
+	_fbink -t $fonts,px=70,top=300 -m "$DOW"
+	_fbink -B GRAYB -k top=500,left=430,width=170,height=300
 
-fonts="regular=/mnt/us/fonts/NotoSansMono-Regular.ttf,bold=/mnt/us/fonts/NotoSansMono-Bold.ttf"
-{
-	echo "Пн  Вт  Ср  Чт  Пт  Сб  Нд"
-	cal
-} | _fbink -O -t $fonts,px=50,format,top=500,left=6
+	fonts="regular=/mnt/us/fonts/NotoSansMono-Regular.ttf,bold=/mnt/us/fonts/NotoSansMono-Bold.ttf"
+	{
+		echo "Пн  Вт  Ср  Чт  Пт  Сб  Нд"
+		cal
+	} | _fbink -O -t $fonts,px=50,format,top=500,left=6
 
 
-fbink -q -s
+	fbink -q -s
+done
