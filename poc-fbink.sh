@@ -69,8 +69,9 @@ _fbink() {
 	fbink -q -b "$@"
 }
 
-tmp=$(mktemp /tmp/kindle-cal.XXXXXX)
-trap 'rm -f $tmp' 0 INT TERM
+tmp=/tmp/kindle-cal
+rm -f $tmp.*
+tmp=$(mktemp $tmp.XXXXXX)
 
 _fbink -c -f
 
