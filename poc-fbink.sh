@@ -78,7 +78,6 @@ _fbink -c -f
 firsttime=y
 cal_refresh_day=0
 while :; do
-	fbink -q -s
 	[ "$firsttime" ] && firsttime='' || sleep "$((60-$(date +%s)%60))"
 
 	date "+%Y %m %-d %u %H:%M" > "$tmp"
@@ -86,16 +85,14 @@ while :; do
 	DOW=$(dow "$DOW")
 
 	fonts="regular=/mnt/us/fonts/NotoSerif-Regular.ttf,bold=/mnt/us/fonts/NotoSerif-Bold.ttf,italic=/mnt/us/fonts/NotoSerif-Italic.ttf,bolditalic=/mnt/us/fonts/NotoSerif-BoldItalic.ttf"
-	if [ "$cal_refresh_day" = "$DAY" ]; then
-		_fbink -t $fonts,px=270,style=BOLD -m "$TIME"
-		_fbink -t $fonts,px=70,top=230 -m "$DAY $(mon "$MONTH") $YEAR р."
-		continue
-	else
-		_fbink -c
-		_fbink -t $fonts,px=270,style=BOLD -m "$TIME"
-		_fbink -t $fonts,px=70,top=230 -m "$DAY $(mon "$MONTH") $YEAR р."
-		cal_refresh_day=$DAY
-	fi
+	_fbink -t $fonts,px=270,style=BOLD,padding=HORIZONTAL -m "$TIME"
+	fbink -q -s top=0,left=0,width=600,height=220
+
+	[ "$cal_refresh_day" = "$DAY" ] && continue
+
+	cal_refresh_day=$DAY
+	_fbink -k top=220,left=0,width=600,height=580
+	_fbink -t $fonts,px=70,top=230 -m "$DAY $(mon "$MONTH") $YEAR р."
 	_fbink -t $fonts,px=70,top=300 -m "$DOW"
 
 	fonts="regular=/mnt/us/fonts/NotoSansMono-Regular.ttf,bold=/mnt/us/fonts/NotoSansMono-Bold.ttf"
@@ -103,4 +100,5 @@ while :; do
 	_fbink -B GRAY2 -k top=500,left=0,width=600,height=52
 	_fbink -B GRAY2 -C WHITE -t $fonts,px=50,format,top=500,left=6 "Пн  Вт  Ср  Чт  Пт  Сб  Нд"
 	cal | _fbink -O -t $fonts,px=50,format,top=550,left=6
+	fbink -q -s
 done
