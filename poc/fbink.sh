@@ -75,10 +75,9 @@ tmp=$(mktemp $tmp.XXXXXX)
 
 _fbink -c -f
 
-firsttime=y
 cal_refresh_day=0
 while :; do
-	[ "$firsttime" ] && firsttime='' || sleep "$((60-$(date +%s)%60))"
+	[ "$cal_refresh_day" -ne 0 ] && sleep "$((60-$(date +%s)%60))"
 
 	date "+%Y %m %-d %u %H:%M" > "$tmp"
 	read -r YEAR MONTH DAY DOW TIME < "$tmp"
