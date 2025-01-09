@@ -70,8 +70,8 @@ _fbink() {
 }
 
 tmp=/tmp/kindle-cal
-rm -f $tmp.*
-tmp=$(mktemp $tmp.XXXXXX)
+rm -rf $tmp.*
+tmp=$(mktemp -d $tmp.XXXXXX)
 
 _fbink -c -f
 
@@ -79,14 +79,40 @@ cal_refresh_day=0
 while :; do
 	[ "$cal_refresh_day" -ne 0 ] && sleep "$((60-$(date +%s)%60))"
 
-	date "+%Y %m %-d %u %H:%M" > "$tmp"
-	read -r YEAR MONTH DAY DOW TIME < "$tmp"
+	date "+%Y %m %-d %u %H:%M" > "$tmp/timestamp"
+	read -r YEAR MONTH DAY DOW TIME < "$tmp/timestamp"
 	DOW=$(dow "$DOW")
+	powerd_test -s > "$tmp/powerd_state"
+	{
+		read state
+		state=${state##*: }
+		read rem_time
+		rem_time=${rem_time##*: }
+		read _; read _; read _; read _
+		read bat
+		bat=${bat##*: }
+		bat=${bat%%%}
+		read _
+		read charging
+		charging=${charging##*: }
+	} < "$tmp/powerd_state"
 
 	fonts="regular=/mnt/us/fonts/NotoSerif-Regular.ttf,bold=/mnt/us/fonts/NotoSerif-Bold.ttf,italic=/mnt/us/fonts/NotoSerif-Italic.ttf,bolditalic=/mnt/us/fonts/NotoSerif-BoldItalic.ttf"
 	_fbink -t $fonts,px=270,style=BOLD,padding=HORIZONTAL -m "$TIME"
-	fbink -q -s top=0,left=0,width=600,height=220
 
+	bat_msg=""
+	[ "$bat" -le 99 ] && bat_msg="Low battery, please charge"
+	[ "$charging" = "Yes" ] && {
+		bat_msg="Charging"
+		[ "$bat" -eq 100 ] && bat_msg="Ready to unplug the charger"
+	}
+	[ "$bat_msg" ] && {
+		_fbink -P $bat
+		_fbink -y 1 -Y 4 -r -m "$bat_msg"
+	}
+
+
+	fbink -q -s top=0,left=0,width=600,height=220
 	[ "$cal_refresh_day" = "$DAY" ] && continue
 
 	cal_refresh_day=$DAY
