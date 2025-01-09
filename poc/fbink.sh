@@ -15,6 +15,10 @@
 /mnt/us/fonts/NotoSerif-Regular.ttf
 "
 
+# config
+BAT_LOW=20
+BAT_HIGH=80
+
 dow() {
 	local d=""
 	case "$1" in
@@ -101,10 +105,10 @@ while :; do
 	_fbink -t $fonts,px=270,style=BOLD,padding=HORIZONTAL -m "$TIME"
 
 	bat_msg=""
-	[ "$bat" -le 99 ] && bat_msg="Low battery, please charge"
+	[ "$bat" -le "$BAT_LOW" ] && bat_msg="Low battery, please charge"
 	[ "$charging" = "Yes" ] && {
 		bat_msg="Charging"
-		[ "$bat" -eq 100 ] && bat_msg="Ready to unplug the charger"
+		[ "$bat" -ge "$BAT_HIGH" ] && bat_msg="Ready to unplug the charger"
 	}
 	[ "$bat_msg" ] && {
 		_fbink -P $bat
