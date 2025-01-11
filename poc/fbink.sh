@@ -77,9 +77,15 @@ tmp=/tmp/kindle-cal
 rm -rf $tmp.*
 tmp=$(mktemp -d $tmp.XXXXXX)
 
+cal_refresh_day=0
+
+[ $(lipc-get-prop com.lab126.powerd state) = active ] && {
+	powerd_test -p
+	sleep 5
+}
+
 _fbink -c -f
 
-cal_refresh_day=0
 while :; do
 	[ "$cal_refresh_day" -ne 0 ] && sleep "$((60-$(date +%s)%60))"
 
@@ -100,6 +106,10 @@ while :; do
 		read -r charging
 		charging=${charging##*: }
 	} < "$tmp/powerd_state"
+
+	case "$state" in
+		Active) exit 0 ;;
+	esac
 
 	fonts="regular=/mnt/us/fonts/NotoSerif-Regular.ttf,bold=/mnt/us/fonts/NotoSerif-Bold.ttf,italic=/mnt/us/fonts/NotoSerif-Italic.ttf,bolditalic=/mnt/us/fonts/NotoSerif-BoldItalic.ttf"
 	_fbink -t $fonts,px=270,style=BOLD,padding=HORIZONTAL -m "$TIME"
