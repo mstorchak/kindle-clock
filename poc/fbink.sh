@@ -87,16 +87,17 @@ while :; do
 	read -r YEAR MONTH DAY DOW TIME < "$tmp/timestamp"
 	powerd_test -s > "$tmp/powerd_state"
 	{
-		read state
+		read -r state
 		state=${state##*: }
-		read rem_time
+		read -r rem_time
 		rem_time=${rem_time##*: }
-		read _; read _; read _; read _
-		read bat
+		rem_time=${rem_time%%.*}
+		read -r _; read -r _; read -r _; read -r _
+		read -r bat
 		bat=${bat##*: }
 		bat=${bat%%%}
-		read _
-		read charging
+		read -r _
+		read -r charging
 		charging=${charging##*: }
 	} < "$tmp/powerd_state"
 
