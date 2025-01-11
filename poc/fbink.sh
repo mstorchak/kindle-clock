@@ -81,8 +81,13 @@ cal_refresh_day=0
 
 [ $(lipc-get-prop com.lab126.powerd state) = active ] && {
 	powerd_test -p
-	sleep 5
+	sleep 3
 }
+
+lipc-set-prop com.lab126.wan stopWan 1
+lipc-set-prop com.lab126.wan enable 0
+lipc-set-prop com.lab126.wifid cmConnect 0
+lipc-set-prop com.lab126.wifid enable 0
 
 _fbink -c -f
 
