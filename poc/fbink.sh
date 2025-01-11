@@ -18,6 +18,7 @@
 # config
 BAT_LOW=20
 BAT_HIGH=80
+NTP_PERIOD=$((3600*6))
 
 dow() {
 	local d=""
@@ -78,24 +79,24 @@ rm -rf $tmp.*
 tmp=$(mktemp -d $tmp.XXXXXX)
 
 cal_refresh_day=0
+next_ntpdate=0
 
-[ $(lipc-get-prop com.lab126.powerd state) = active ] && {
+[ "$(lipc-get-prop com.lab126.powerd state)" = active ] && {
 	powerd_test -p
 	sleep 3
 }
 
 lipc-set-prop com.lab126.wan stopWan 1
 lipc-set-prop com.lab126.wan enable 0
-lipc-set-prop com.lab126.wifid cmConnect 0
-lipc-set-prop com.lab126.wifid enable 0
 
 _fbink -c -f
 
 while :; do
+
 	[ "$cal_refresh_day" -ne 0 ] && sleep "$((60-$(date +%s)%60))"
 
-	date "+%Y %m %-d %u %H:%M" > "$tmp/timestamp"
-	read -r YEAR MONTH DAY DOW TIME < "$tmp/timestamp"
+	date "+%Y %m %-d %u %H %M %s" > "$tmp/timestamp"
+	read -r YEAR MONTH DAY DOW HOUR MINUTE NOW < "$tmp/timestamp"
 	powerd_test -s > "$tmp/powerd_state"
 	{
 		read -r state
@@ -117,7 +118,7 @@ while :; do
 	esac
 
 	fonts="regular=/mnt/us/fonts/NotoSerif-Regular.ttf,bold=/mnt/us/fonts/NotoSerif-Bold.ttf,italic=/mnt/us/fonts/NotoSerif-Italic.ttf,bolditalic=/mnt/us/fonts/NotoSerif-BoldItalic.ttf"
-	_fbink -t $fonts,px=270,style=BOLD,padding=HORIZONTAL -m "$TIME"
+	_fbink -t $fonts,px=270,style=BOLD,padding=HORIZONTAL -m "$HOUR:$MINUTE"
 
 	bat_msg=""
 	[ "$bat" -le "$BAT_LOW" ] && bat_msg="Low battery, please charge"
@@ -129,8 +130,18 @@ while :; do
 		_fbink -P "$bat"
 		_fbink -y 1 -Y 4 -m "$bat_msg"
 	}
-
 	fbink -q -s top=0,left=0,width=600,height=220
+
+
+	[ "$next_ntpdate" -le "$NOW" ] && [ $((MINUTE % 10)) -eq 3 ] && {
+		lipc-set-prop com.lab126.wifid enable 1
+		lipc-wait-event -s 60 com.lab126.wifid cmConnected && ntpdate 172.19.47.1 > "$tmp/ntpdate" 2>&1 && next_ntpdate=$((NOW+NTP_PERIOD))
+		lipc-set-prop com.lab126.wifid enable 0
+		lipc-wait-event -s 60 com.lab126.wifid cmIntfNotAvailable
+		read -r ntpdate_msg < "$tmp/ntpdate"
+		fbink -q -y 2 -Y 4 -m "${ntpdate_msg#*: }"
+	} > /dev/null 2>&1
+
 	[ "$cal_refresh_day" = "$DAY" ] && continue
 
 	cal_refresh_day=$DAY
