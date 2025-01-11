@@ -108,11 +108,11 @@ while :; do
 	[ "$bat" -le "$BAT_LOW" ] && bat_msg="Low battery, please charge"
 	[ "$charging" = "Yes" ] && {
 		bat_msg="Charging"
-		[ "$bat" -ge "$BAT_HIGH" ] && bat_msg="Ready to unplug the charger"
+		[ "$bat" -ge "$BAT_HIGH" ] && bat_msg="Charged"
 	}
 	[ "$bat_msg" ] && {
-		_fbink -P $bat
-		_fbink -y 1 -Y 4 -r -m "$bat_msg"
+		_fbink -P "$bat"
+		_fbink -y 1 -Y 4 -m "$bat_msg"
 	}
 
 	fbink -q -s top=0,left=0,width=600,height=220
