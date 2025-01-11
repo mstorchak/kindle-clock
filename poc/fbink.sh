@@ -85,7 +85,6 @@ while :; do
 
 	date "+%Y %m %-d %u %H:%M" > "$tmp/timestamp"
 	read -r YEAR MONTH DAY DOW TIME < "$tmp/timestamp"
-	DOW=$(dow "$DOW")
 	powerd_test -s > "$tmp/powerd_state"
 	{
 		read state
@@ -115,14 +114,12 @@ while :; do
 		_fbink -y 1 -Y 4 -r -m "$bat_msg"
 	}
 
-
 	fbink -q -s top=0,left=0,width=600,height=220
 	[ "$cal_refresh_day" = "$DAY" ] && continue
 
 	cal_refresh_day=$DAY
 	_fbink -k top=220,left=0,width=600,height=580
-	_fbink -t $fonts,px=70,top=230 -m "$DAY $(mon "$MONTH") $YEAR р."
-	_fbink -t $fonts,px=70,top=300 -m "$DOW"
+	_fbink -t $fonts,px=64,top=230 -m "$DAY $(mon "$MONTH"), $(dow "$DOW")"
 
 	fonts="regular=/mnt/us/fonts/NotoSansMono-Regular.ttf,bold=/mnt/us/fonts/NotoSansMono-Bold.ttf"
 	_fbink -B GRAYB -k top=500,left=430,width=170,height=300
