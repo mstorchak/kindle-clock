@@ -133,7 +133,7 @@ while :; do
 	fbink -q -s top=0,left=0,width=600,height=220
 
 
-	[ "$next_ntpdate" -le "$NOW" ] && [ $((MINUTE % 10)) -eq 3 ] && {
+	[ "$next_ntpdate" -le "$NOW" ] && [ $((MINUTE%10)) -eq 3 ] && {
 		lipc-set-prop com.lab126.wifid enable 1
 		lipc-wait-event -s 60 com.lab126.wifid cmConnected && ntpdate 172.19.47.1 > "$tmp/ntpdate" 2>&1 && next_ntpdate=$((NOW+NTP_PERIOD))
 		lipc-set-prop com.lab126.wifid enable 0
