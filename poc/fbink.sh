@@ -115,6 +115,13 @@ while :; do
 
 	case "$state" in
 		Active) exit 0 ;;
+		Screen*Saver)
+			if [ "$rem_time" -ge 0 ] 2> /dev/null; then
+				fbink -q -y 2 -Y 4 -r "screenSaver, $rem_time sec left"
+				lipc-wait-event -s 60 com.lab126.powerd readyToSuspend && powerd_test -d 600
+			fi
+			;;
+		Ready*to*suspend) powerd_test -d 600 ;;
 	esac
 
 	fonts="regular=/mnt/us/fonts/NotoSerif-Regular.ttf,bold=/mnt/us/fonts/NotoSerif-Bold.ttf,italic=/mnt/us/fonts/NotoSerif-Italic.ttf,bolditalic=/mnt/us/fonts/NotoSerif-BoldItalic.ttf"
