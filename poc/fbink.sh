@@ -106,9 +106,10 @@ cal_refresh_day=0
 next_ntpdate=0
 
 [ "$(lipc-get-prop com.lab126.powerd state)" = active ] && {
-	powerd_test -p
-	sleep 3
+	powerd_test -p > /dev/null 2>&1
 }
+
+ntpsync
 
 lipc-set-prop com.lab126.wan stopWan 1
 lipc-set-prop com.lab126.wan enable 0
