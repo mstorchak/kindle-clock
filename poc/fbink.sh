@@ -188,13 +188,11 @@ while :; do
 			;;
 	esac > /dev/null 2>&1
 
-	[ "$next_ntpdate" -le "$NOW" ] && [ $((MINUTE%10)) -eq 3 ] && {
-		lipc-set-prop com.lab126.wifid enable 1
-		lipc-wait-event -s 60 com.lab126.wifid cmConnected && ntpdate 172.19.47.1 > "$tmp/ntpdate" 2>&1 && next_ntpdate=$((NOW+NTP_PERIOD))
-		lipc-set-prop com.lab126.wifid enable 0
-		lipc-wait-event -s 60 com.lab126.wifid cmIntfNotAvailable
+	# sync time
+	[ "$next_ntpdate" -le "$NOW" ] && [ $((_MINUTE%10)) -eq 3 ] && {
+		ntpsync
 		read -r ntpdate_msg < "$tmp/ntpdate"
-		fbink -q -y 2 -Y 4 -m "${ntpdate_msg#*: }"
+		debug "$ntpdate_msg"
 	} > /dev/null 2>&1
 
 	[ "$cal_refresh_day" = "$DAY" ] && continue
