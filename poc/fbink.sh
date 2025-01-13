@@ -19,6 +19,7 @@
 BAT_LOW=20
 BAT_HIGH=80
 NTP_PERIOD=$((3600*6))
+S2R_EXTRA=2
 
 dow() {
 	local d=""
@@ -104,6 +105,7 @@ tmp=$(mktemp -d $tmp.XXXXXX)
 
 cal_refresh_day=0
 next_ntpdate=0
+NOW=0
 
 [ "$(lipc-get-prop com.lab126.powerd state)" = active ] && {
 	powerd_test -p > /dev/null 2>&1
@@ -117,11 +119,27 @@ lipc-set-prop com.lab126.wan enable 0
 _fbink -c -f
 
 while :; do
+	debug_start
+	if [ "$cal_refresh_day" -ne 0 ]; then
+		date "+%s %-S" > "$tmp/sleep"
+		read -r wakeup sleep_s2r < "$tmp/sleep"
+		sleep_s2r=$((60-sleep_s2r+S2R_EXTRA))
+		debug "$(date), s2r=$sleep_s2r"
+		if [ "$sleep_s2r" -gt 5 ]; then
+			wakeup=$((wakeup+sleep_s2r))
+			echo $wakeup > /sys/class/rtc/rtc0/wakealarm
+			echo mem > /sys/power/state
+		else
+			sleep "$sleep_s2r"
+		fi
+	fi
 
-	[ "$cal_refresh_day" -ne 0 ] && sleep "$((60-$(date +%s)%60))"
+	date "+%Y %m %-d %u %H %M %-M %s" > "$tmp/timestamp"
+	read -r YEAR MONTH DAY DOW HOUR MINUTE _MINUTE NOW < "$tmp/timestamp"
 
-	date "+%Y %m %-d %u %H %M %s" > "$tmp/timestamp"
-	read -r YEAR MONTH DAY DOW HOUR MINUTE NOW < "$tmp/timestamp"
+	fonts="regular=/mnt/us/fonts/NotoSerif-Regular.ttf,bold=/mnt/us/fonts/NotoSerif-Bold.ttf,italic=/mnt/us/fonts/NotoSerif-Italic.ttf,bolditalic=/mnt/us/fonts/NotoSerif-BoldItalic.ttf"
+	_fbink -t $fonts,px=270,style=BOLD,padding=HORIZONTAL -m "$HOUR:$MINUTE"
+
 	powerd_test -s > "$tmp/powerd_state"
 	{
 		read -r state
@@ -138,20 +156,9 @@ while :; do
 		charging=${charging##*: }
 	} < "$tmp/powerd_state"
 
-	case "$state" in
-		Active) exit 0 ;;
-		Screen*Saver)
-			if [ "$rem_time" -ge 0 ] 2> /dev/null; then
-				fbink -q -y 2 -Y 4 -r "screenSaver, $rem_time sec left"
-				lipc-wait-event -s 60 com.lab126.powerd readyToSuspend && powerd_test -d 600
-			fi
-			;;
-		Ready*to*suspend) powerd_test -d 600 ;;
-	esac
+	debug "state=$state, rem_time=$rem_time, bat=$bat, charging=$charging"
 
-	fonts="regular=/mnt/us/fonts/NotoSerif-Regular.ttf,bold=/mnt/us/fonts/NotoSerif-Bold.ttf,italic=/mnt/us/fonts/NotoSerif-Italic.ttf,bolditalic=/mnt/us/fonts/NotoSerif-BoldItalic.ttf"
-	_fbink -t $fonts,px=270,style=BOLD,padding=HORIZONTAL -m "$HOUR:$MINUTE"
-
+	# battery level and charging state
 	bat_msg=""
 	[ "$bat" -le "$BAT_LOW" ] && bat_msg="Low battery, please charge"
 	[ "$charging" = "Yes" ] && {
@@ -162,8 +169,24 @@ while :; do
 		_fbink -P "$bat"
 		_fbink -y 1 -Y 4 -m "$bat_msg"
 	}
+
+	# update the screen
 	fbink -q -s top=0,left=0,width=600,height=220
 
+	# defer suspending
+	case "$state" in
+		Active) exit 0 ;;
+		Screen*Saver)
+			if [ "$rem_time" -ge 0 ] 2> /dev/null; then
+				debug "screenSaver, $rem_time sec left, waiting..."
+				lipc-wait-event -s 60 com.lab126.powerd readyToSuspend && powerd_test -d 600
+			fi
+			;;
+		Ready*to*suspend)
+			powerd_test -d 600
+			debug ' '
+			;;
+	esac > /dev/null 2>&1
 
 	[ "$next_ntpdate" -le "$NOW" ] && [ $((MINUTE%10)) -eq 3 ] && {
 		lipc-set-prop com.lab126.wifid enable 1
