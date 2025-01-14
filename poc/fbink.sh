@@ -89,7 +89,7 @@ debug() {
 ntpsync() {
 	echo ntpsync start
 	lipc-set-prop com.lab126.wifid enable 1
-	lipc-wait-event -s 60 com.lab126.wifid cmConnected && { sleep 1; ntpdate 172.19.47.1 > "$tmp/ntpdate" 2>&1; } && next_ntpdate=$((NOW+NTP_PERIOD))
+	lipc-wait-event -s 60 com.lab126.wifid cmConnected && { sleep 1; ntpdate 172.19.47.1 > "$tmp/ntpdate" 2>&1; } && next_ntpdate=$((NOW+NTP_PERIOD)) && hwclock -u -w
 	lipc-set-prop com.lab126.wifid enable 0
 	lipc-wait-event -s 60 com.lab126.wifid cmIntfNotAvailable
 	cat "$tmp/ntpdate"
