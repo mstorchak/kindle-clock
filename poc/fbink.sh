@@ -82,7 +82,7 @@ debug_start() {
 debug() {
 	local lines
 	fbink -q -r -y $LNO -l "$@" > "$tmp/lines"
-	read lines < "$tmp/lines"
+	read -r lines < "$tmp/lines"
 	LNO=$((LNO+lines))
 }
 
