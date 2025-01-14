@@ -18,7 +18,7 @@
 # config
 BAT_LOW=20
 BAT_HIGH=80
-NTP_PERIOD=$((3600*6))
+NTP_PERIOD=$((3600*2))
 S2R_EXTRA=2
 
 dow() {
