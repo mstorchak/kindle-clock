@@ -87,13 +87,12 @@ debug() {
 }
 
 ntpsync() {
-	echo ntpsync start
+	fbink -y 9 -m -q -h -r "Syncing time..."
 	lipc-set-prop com.lab126.wifid enable 1
 	lipc-wait-event -s 60 com.lab126.wifid cmConnected && { sleep 1; ntpdate 172.19.47.1 > "$tmp/ntpdate" 2>&1; } && next_ntpdate=$((NOW+NTP_PERIOD)) && hwclock -u -w
 	lipc-set-prop com.lab126.wifid enable 0
 	lipc-wait-event -s 60 com.lab126.wifid cmIntfNotAvailable
 	cat "$tmp/ntpdate"
-	echo ntpsync end
 }
 
 
@@ -124,7 +123,6 @@ while :; do
 		sleep_s2r=$(date "+%-S")
 		read -r wakeup < /sys/class/rtc/rtc0/since_epoch
 		sleep_s2r=$((60-sleep_s2r+S2R_EXTRA))
-		debug "$(date), s2r=$sleep_s2r"
 		if [ "$sleep_s2r" -gt 5 ]; then
 			wakeup=$((wakeup+sleep_s2r))
 			echo $wakeup > /sys/class/rtc/rtc0/wakealarm
@@ -178,13 +176,12 @@ while :; do
 		Active) exit 0 ;;
 		Screen*Saver)
 			if [ "$rem_time" -ge 0 ] 2> /dev/null; then
-				debug "screenSaver, $rem_time sec left, waiting..."
+				fbink -y 9 -m -q -h -r "Activating power saving mode..."
 				lipc-wait-event -s 60 com.lab126.powerd readyToSuspend && powerd_test -d 600
 			fi
 			;;
 		Ready*to*suspend)
 			powerd_test -d 600
-			debug ' '
 			;;
 	esac > /dev/null 2>&1
 
