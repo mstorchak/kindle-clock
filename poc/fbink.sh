@@ -121,8 +121,8 @@ _fbink -c -f
 while :; do
 	debug_start
 	if [ "$cal_refresh_day" -ne 0 ]; then
-		date "+%s %-S" > "$tmp/sleep"
-		read -r wakeup sleep_s2r < "$tmp/sleep"
+		sleep_s2r=$(date "+%-S")
+		read -r wakeup < /sys/class/rtc/rtc0/since_epoch
 		sleep_s2r=$((60-sleep_s2r+S2R_EXTRA))
 		debug "$(date), s2r=$sleep_s2r"
 		if [ "$sleep_s2r" -gt 5 ]; then
