@@ -121,20 +121,21 @@ _fbink -c -f
 while :; do
 	debug_start
 	if [ "$cal_refresh_day" -ne 0 ]; then
-		sleep_s2r=$(date "+%-S")
-		read -r wakeup < /sys/class/rtc/rtc0/since_epoch
-		sleep_s2r=$((60-sleep_s2r+S2R_EXTRA))
+		read -r NOW < /sys/class/rtc/rtc0/since_epoch
+		#sleep_s2r=$(date -D %s -d "$NOW" "+%-S")
+		#sleep_s2r=$((60-sleep_s2r+S2R_EXTRA))
+		sleep_s2r=$((60-NOW%60+S2R_EXTRA))
 		if [ "$sleep_s2r" -lt 5 ] || [ "$MINUTE" = "00" ] || [ "$rem_time" = "Unknown" ]; then
 			sleep "$sleep_s2r"
 		else
-			wakeup=$((wakeup+sleep_s2r))
-			echo $wakeup > /sys/class/rtc/rtc0/wakealarm
+			echo $((NOW+sleep_s2r)) > /sys/class/rtc/rtc0/wakealarm
 			echo mem > /sys/power/state
 		fi
 	fi
 
-	date "+%Y %m %-d %u %H %M %-M %s" > "$tmp/timestamp"
-	read -r YEAR MONTH DAY DOW HOUR MINUTE _MINUTE NOW < "$tmp/timestamp"
+	read -r NOW < /sys/class/rtc/rtc0/since_epoch
+	date -D %s -d "$NOW" "+%Y %m %-d %u %H %M %-M" > "$tmp/timestamp"
+	read -r YEAR MONTH DAY DOW HOUR MINUTE _MINUTE < "$tmp/timestamp"
 
 	fonts="regular=/mnt/us/fonts/NotoSerif-Regular.ttf,bold=/mnt/us/fonts/NotoSerif-Bold.ttf,italic=/mnt/us/fonts/NotoSerif-Italic.ttf,bolditalic=/mnt/us/fonts/NotoSerif-BoldItalic.ttf"
 	_fbink -t $fonts,px=270,style=BOLD,padding=HORIZONTAL -m "$HOUR:$MINUTE"
