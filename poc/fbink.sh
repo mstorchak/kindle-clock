@@ -123,7 +123,7 @@ while :; do
 		sleep_s2r=$(date "+%-S")
 		read -r wakeup < /sys/class/rtc/rtc0/since_epoch
 		sleep_s2r=$((60-sleep_s2r+S2R_EXTRA))
-		if [ "$sleep_s2r" -lt 5 ] || [ "$MINUTE" = "00" ] || [ "rem_time" = "Unknown" ]; then
+		if [ "$sleep_s2r" -lt 5 ] || [ "$MINUTE" = "00" ] || [ "$rem_time" = "Unknown" ]; then
 			sleep "$sleep_s2r"
 		else
 			wakeup=$((wakeup+sleep_s2r))
@@ -154,7 +154,7 @@ while :; do
 		charging=${charging##*: }
 	} < "$tmp/powerd_state"
 
-	debug "Battery: %bat, charging: $charging. $state, time: $rem_time"
+	debug "Battery: $bat%, charging: $charging. $state, time: $rem_time"
 
 	# battery level and charging state
 	bat_msg=""
