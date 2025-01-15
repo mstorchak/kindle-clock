@@ -123,12 +123,12 @@ while :; do
 		sleep_s2r=$(date "+%-S")
 		read -r wakeup < /sys/class/rtc/rtc0/since_epoch
 		sleep_s2r=$((60-sleep_s2r+S2R_EXTRA))
-		if [ "$sleep_s2r" -gt 5 ]; then
+		if [ "$sleep_s2r" -lt 5 ] || [ "$MINUTE" = "00" ]; then
+			sleep "$sleep_s2r"
+		else
 			wakeup=$((wakeup+sleep_s2r))
 			echo $wakeup > /sys/class/rtc/rtc0/wakealarm
 			echo mem > /sys/power/state
-		else
-			sleep "$sleep_s2r"
 		fi
 	fi
 
