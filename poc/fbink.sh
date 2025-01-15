@@ -154,8 +154,6 @@ while :; do
 		charging=${charging##*: }
 	} < "$tmp/powerd_state"
 
-	debug "Battery: $bat%, charging: $charging. $state, time: $rem_time"
-
 	# battery level and charging state
 	bat_msg=""
 	[ "$bat" -le "$BAT_LOW" ] && bat_msg="Low battery, please charge"
