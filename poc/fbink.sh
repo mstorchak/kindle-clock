@@ -154,7 +154,7 @@ while :; do
 		charging=${charging##*: }
 	} < "$tmp/powerd_state"
 
-	debug "state=$state, rem_time=$rem_time, bat=$bat, charging=$charging"
+	debug "Battery: %bat, charging: $charging. $state, time: $rem_time"
 
 	# battery level and charging state
 	bat_msg=""
