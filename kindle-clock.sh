@@ -17,6 +17,7 @@
 
 # config
 export TZ='EET-2EEST,M3.5.0/3,M10.5.0/4'
+DEBUG=false
 BAT_LOW=20
 BAT_HIGH=90
 NTP_PERIOD=$((3600*6))
@@ -80,6 +81,7 @@ debug_start() {
 }
 
 debug() {
+	"$DEBUG" || return 0
 	local lines
 	fbink -q -r -y $LNO -l "$@" > "$tmp/lines"
 	read -r lines < "$tmp/lines"
@@ -118,7 +120,6 @@ lipc-set-prop com.lab126.wan enable 0
 _fbink -c -f
 
 while :; do
-	debug_start
 	if [ "$cal_refresh_day" -ne 0 ]; then
 		read -r NOW < /sys/class/rtc/rtc0/since_epoch
 		sleep_s2r=$((60-NOW%60))
@@ -186,7 +187,6 @@ while :; do
 	[ "$next_ntpdate" -le "$NOW" ] && [ $((_MINUTE%10)) -eq 3 ] && {
 		ntpsync
 		read -r ntpdate_msg < "$tmp/ntpdate"
-		debug "$ntpdate_msg"
 	} > /dev/null 2>&1
 
 	[ "$cal_refresh_day" = "$DAY" ] && continue
