@@ -18,8 +18,8 @@
 # config
 export TZ='EET-2EEST,M3.5.0/3,M10.5.0/4'
 BAT_LOW=20
-BAT_HIGH=80
-NTP_PERIOD=$((3600*2))
+BAT_HIGH=90
+NTP_PERIOD=$((3600*6))
 
 dow() {
 	local d=""
