@@ -197,8 +197,8 @@ while :; do
 
 	fonts="regular=/mnt/us/fonts/NotoSansMono-Regular.ttf,bold=/mnt/us/fonts/NotoSansMono-Bold.ttf"
 	_fbink -B GRAYB -k top=500,left=430,width=170,height=300
-	_fbink -B GRAY2 -k top=500,left=0,width=600,height=52
-	_fbink -B GRAY2 -C WHITE -t $fonts,px=50,format,top=500,left=6 "Пн  Вт  Ср  Чт  Пт  Сб  Нд"
+	_fbink -B GRAY2 -k top=500,left=0,width=6,height=50
+	_fbink -B GRAY2 -C WHITE -t $fonts,px=50,format,top=500,left=6,padding=HORIZONTAL "Пн  Вт  Ср  Чт  Пт  Сб  Нд"
 	cal | _fbink -O -t $fonts,px=50,format,top=550,left=6
 	fbink -q -s
 done
