@@ -20,7 +20,6 @@ export TZ='EET-2EEST,M3.5.0/3,M10.5.0/4'
 BAT_LOW=20
 BAT_HIGH=80
 NTP_PERIOD=$((3600*2))
-S2R_EXTRA=2
 
 dow() {
 	local d=""
@@ -122,9 +121,7 @@ while :; do
 	debug_start
 	if [ "$cal_refresh_day" -ne 0 ]; then
 		read -r NOW < /sys/class/rtc/rtc0/since_epoch
-		#sleep_s2r=$(date -D %s -d "$NOW" "+%-S")
-		#sleep_s2r=$((60-sleep_s2r+S2R_EXTRA))
-		sleep_s2r=$((60-NOW%60+S2R_EXTRA))
+		sleep_s2r=$((60-NOW%60))
 		if [ "$sleep_s2r" -lt 5 ] || [ "$MINUTE" = "00" ] || [ "$rem_time" = "Unknown" ]; then
 			sleep "$sleep_s2r"
 		else
