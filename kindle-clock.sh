@@ -120,8 +120,6 @@ ntpsync
 lipc-set-prop com.lab126.wan stopWan 1
 lipc-set-prop com.lab126.wan enable 0
 
-_fbink -c -f
-
 while :; do
 	if [ "$cal_refresh_day" -ne 0 ]; then
 		read -r NOW < /sys/class/rtc/rtc0/since_epoch
@@ -137,6 +135,8 @@ while :; do
 	read -r NOW < /sys/class/rtc/rtc0/since_epoch
 	date -D %s -d "$NOW" "+%Y %m %-d %u %H %M %-M" > "$tmp/timestamp"
 	read -r YEAR MONTH DAY DOW HOUR MINUTE _MINUTE < "$tmp/timestamp"
+
+	[ "$cal_refresh_day" != "$DAY" ] && fbink -q -c -f
 
 	fonts="regular=/mnt/us/fonts/NotoSerif-Regular.ttf,bold=/mnt/us/fonts/NotoSerif-Bold.ttf,italic=/mnt/us/fonts/NotoSerif-Italic.ttf,bolditalic=/mnt/us/fonts/NotoSerif-BoldItalic.ttf"
 	_fbink -t $fonts,px=270,style=BOLD,padding=HORIZONTAL -m "$HOUR:$MINUTE"
