@@ -177,8 +177,9 @@ while :; do
 		Active) exit 0 ;;
 		Screen*Saver)
 			if [ "$rem_time" -ge 0 ] 2> /dev/null; then
-				fbink -y 9 -m -q -h -r "Activating power saving mode..."
+				fbink -q -y 9 -m -h -r "Activating power saving mode..."
 				lipc-wait-event -s 60 com.lab126.powerd readyToSuspend && powerd_test -d 600
+				fbink -q -y 10 -m -h -r "done"
 			fi
 			;;
 		Ready*to*suspend)
