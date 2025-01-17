@@ -89,12 +89,14 @@ debug() {
 }
 
 ntpsync() {
-	fbink -y 9 -m -q -h -r "Syncing time..."
-	lipc-set-prop com.lab126.wifid enable 1
-	lipc-wait-event -s 60 com.lab126.wifid cmConnected && { sleep 1; ntpdate 172.19.47.1 > "$tmp/ntpdate" 2>&1; } && next_ntpdate=$((NOW+NTP_PERIOD)) && hwclock -u -w
-	lipc-set-prop com.lab126.wifid enable 0
-	lipc-wait-event -s 60 com.lab126.wifid cmIntfNotAvailable
-	cat "$tmp/ntpdate"
+	{
+		fbink -q -y 9 -m -h -r "Syncing time..."
+		lipc-set-prop com.lab126.wifid enable 1
+		lipc-wait-event -s 60 com.lab126.wifid cmConnected && { sleep 1; ntpdate 172.19.47.1 > "$tmp/ntpdate" 2>&1; } && next_ntpdate=$((NOW+NTP_PERIOD)) && hwclock -u -w
+		lipc-set-prop com.lab126.wifid enable 0
+		lipc-wait-event -s 60 com.lab126.wifid cmIntfNotAvailable
+		fbink -q -y 9 -m -h -r < "$tmp/ntpdate"
+	} > /dev/null 2>&1
 }
 
 
@@ -106,10 +108,11 @@ tmp=$(mktemp -d $tmp.XXXXXX)
 
 cal_refresh_day=0
 next_ntpdate=0
-NOW=0
+read -r NOW < /sys/class/rtc/rtc0/since_epoch
 
 [ "$(lipc-get-prop com.lab126.powerd state)" = active ] && {
 	powerd_test -p > /dev/null 2>&1
+	sleep 1
 }
 
 ntpsync
@@ -184,10 +187,7 @@ while :; do
 	esac > /dev/null 2>&1
 
 	# sync time
-	[ "$next_ntpdate" -le "$NOW" ] && [ $((_MINUTE%10)) -eq 3 ] && {
-		ntpsync
-		read -r ntpdate_msg < "$tmp/ntpdate"
-	} > /dev/null 2>&1
+	[ "$next_ntpdate" -le "$NOW" ] && [ $((_MINUTE%10)) -eq 3 ] && ntpsync
 
 	[ "$cal_refresh_day" = "$DAY" ] && continue
 
