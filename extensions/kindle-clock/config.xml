@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension>
+	<information>
+		<name>Kindle Wall clock with a calendar</name>
+		<version>1.0</version>
+		<author>Maxim Storchak</author>
+		<id>KINDLE-CLOCK-CALENDAR-SMM</id>
+	</information>
+	<menus>
+		<menu type="json" dynamic="true">menu.json</menu>
+	</menus>
+</extension>

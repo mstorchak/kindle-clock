@@ -1,0 +1,10 @@
+{
+	"items": [
+		{
+			"name": "Start Clock",
+			"action": "kindle-clock.sh",
+			"priority": 1000,
+			"exitmenu": true
+		}
+	]
+}
