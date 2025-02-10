@@ -15,8 +15,10 @@
 /mnt/us/fonts/NotoSerif-Regular.ttf
 "
 FONTDIR=/mnt/us/fonts
-F_REGULAR=$FONTDIR/NotoSans-Regular.ttf
-F_BOLD=$FONTDIR/NotoSans-Bold.ttf
+F_SERIF_REGULAR=$FONTDIR/NotoSerif-Regular.ttf
+F_SERIF_BOLD=$FONTDIR/NotoSerif-Bold.ttf
+F_SANS_REGULAR=$FONTDIR/NotoSans-Regular.ttf
+F_SANS_BOLD=$FONTDIR/NotoSans-Bold.ttf
 F_MONO_REGULAR=$FONTDIR/NotoSansMono-Regular.ttf
 F_MONO_BOLD=$FONTDIR/NotoSansMono-Bold.ttf
 
@@ -143,7 +145,7 @@ while :; do
 
 	[ "$cal_refresh_day" != "$DAY" ] && fbink -q -c -f
 
-	_fbink -t "bold=$F_BOLD,px=270,style=BOLD,padding=HORIZONTAL" -m "$HOUR:$MINUTE"
+	_fbink -t "bold=$F_SANS_BOLD,px=270,style=BOLD,padding=HORIZONTAL" -m "$HOUR:$MINUTE"
 
 	powerd_test -s > "$tmp/powerd_state"
 	{
@@ -198,7 +200,7 @@ while :; do
 
 	cal_refresh_day=$DAY
 	_fbink -k top=220,left=0,width=600,height=580
-	_fbink -t "regular=$F_REGULAR,px=64,top=230" -m "$DAY $(mon "$MONTH"), $(dow "$DOW")"
+	_fbink -t "regular=$F_SERIF_REGULAR,px=64,top=230" -m "$DAY $(mon "$MONTH"), $(dow "$DOW")"
 
 	_fbink -B GRAYB -k top=500,left=430,width=170,height=300
 	_fbink -B GRAY5 -k top=500,left=0,width=6,height=50
