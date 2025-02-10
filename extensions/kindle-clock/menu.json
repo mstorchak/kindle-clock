@@ -1,8 +1,8 @@
 {
 	"items": [
 		{
-			"name": "Start Clock",
-			"action": "kindle-clock.sh",
+			"name": "Start Kindle Clock",
+			"action": "./kindle-clock.sh",
 			"priority": 1000,
 			"exitmenu": true
 		}

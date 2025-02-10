@@ -1,26 +1,16 @@
 #!/bin/sh
 #shellcheck shell=dash
 
-# fonts
-: "
-/mnt/us/fonts/NotoSans-Bold.ttf
-/mnt/us/fonts/NotoSans-BoldItalic.ttf
-/mnt/us/fonts/NotoSans-Italic.ttf
-/mnt/us/fonts/NotoSans-Regular.ttf
-/mnt/us/fonts/NotoSansMono-Bold.ttf
-/mnt/us/fonts/NotoSansMono-Regular.ttf
-/mnt/us/fonts/NotoSerif-Bold.ttf
-/mnt/us/fonts/NotoSerif-BoldItalic.ttf
-/mnt/us/fonts/NotoSerif-Italic.ttf
-/mnt/us/fonts/NotoSerif-Regular.ttf
-"
-FONTDIR=/mnt/us/fonts
-F_SERIF_REGULAR=$FONTDIR/NotoSerif-Regular.ttf
-F_SERIF_BOLD=$FONTDIR/NotoSerif-Bold.ttf
-F_SANS_REGULAR=$FONTDIR/NotoSans-Regular.ttf
-F_SANS_BOLD=$FONTDIR/NotoSans-Bold.ttf
-F_MONO_REGULAR=$FONTDIR/NotoSansMono-Regular.ttf
-F_MONO_BOLD=$FONTDIR/NotoSansMono-Bold.ttf
+# shellcheck disable=SC2034
+{
+	FONTDIR=./fonts
+	F_SERIF_REGULAR=$FONTDIR/NotoSerif-Regular.ttf
+	F_SERIF_BOLD=$FONTDIR/NotoSerif-Bold.ttf
+	F_SANS_REGULAR=$FONTDIR/NotoSans-Regular.ttf
+	F_SANS_BOLD=$FONTDIR/NotoSans-Bold.ttf
+	F_MONO_REGULAR=$FONTDIR/NotoSansMono-Regular.ttf
+	F_MONO_BOLD=$FONTDIR/NotoSansMono-Bold.ttf
+}
 
 # config
 export TZ='EET-2EEST,M3.5.0/3,M10.5.0/4'
@@ -180,7 +170,7 @@ while :; do
 
 	# defer suspending
 	case "$state" in
-		Active) exit 0 ;;
+		Active) fbink -q -c -f; exit 0 ;;
 		Screen*Saver)
 			if [ "$rem_time" -ge 0 ] 2> /dev/null; then
 				fbink -q -y 9 -m -h -r "Activating power saving mode..."
