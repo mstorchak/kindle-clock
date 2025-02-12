@@ -66,7 +66,15 @@ cal() {
 
 	day1=$(date -d "${MONTH}01${YEAR}" +%u)
 
-	i=0; d=0; while [ $d -lt $last ]; do d=$((i-day1+2)); [ $((d - DAY)) -eq 0 ] && c='**' || c=''; [ $d -le 0 ] && echo -n "    " || printf "%s%2s%s  " "$c" "$d" "$c"; [ $((i%7)) -eq 6 ] && echo; i=$((i+1)); done; echo
+	i=0; d=0
+	while [ $d -lt $last ]; do
+		d=$((i-day1+2))
+		[ $((d - DAY)) -eq 0 ] && c='**' || c=''
+		[ $d -le 0 ] && echo -n "    " || printf "%s%2s%s  " "$c" "$d" "$c"
+		[ $((i%7)) -eq 6 ] && echo
+		i=$((i+1))
+	done
+	echo
 }
 
 _fbink() {
