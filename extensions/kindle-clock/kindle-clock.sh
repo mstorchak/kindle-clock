@@ -58,9 +58,9 @@ cal() {
 		01|03|05|07|08|10|12) last=31;;
 		04|06|09|11) last=30;;
 		02)
-			[ $((YEAR % 4 )) -eq 0 ] && last=29 || last=28
-			[ $((YEAR % 100 )) -eq 0 ] && last=29
-			[ $((YEAR % 400 )) -eq 0 ] && last=28
+			[ $((YEAR % 4)) -eq 0 ] && last=29 || last=28
+			[ $((YEAR % 100)) -eq 0 ] && last=29
+			[ $((YEAR % 400)) -eq 0 ] && last=28
 			;;
 	esac
 
