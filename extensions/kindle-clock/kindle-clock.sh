@@ -17,7 +17,10 @@ export TZ='EET-2EEST,M3.5.0/3,M10.5.0/4'
 DEBUG=false
 BAT_LOW=20
 BAT_HIGH=90
+SCREEN_HEIGHTH=800
+SCREEN_WIDTH=600
 NTP_PERIOD=$((3600*6))
+CAL_FONT_SIZE=50
 
 dow() {
 	local d=""
@@ -200,9 +203,12 @@ while :; do
 	_fbink -k top=220,left=0,width=600,height=580
 	_fbink -t "regular=$F_SERIF_REGULAR,px=64,top=230" -m "$DAY $(mon "$MONTH"), $(dow "$DOW")"
 
-	_fbink -B GRAYB -k top=450,left=430,width=170,height=350
-	_fbink -B GRAY5 -k top=450,left=0,width=6,height=50
-	_fbink -B GRAY5 -C WHITE -t "bold=$F_MONO_BOLD,px=50,top=450,left=6,padding=HORIZONTAL,style=BOLD" "Пн  Вт  Ср  Чт  Пт  Сб  Нд"
-	cal | _fbink -O -t regular=$F_MONO_REGULAR,bold=$F_MONO_BOLD,px=50,format,top=500,left=6
+	cal > "$tmp/cal"
+	cal_lines=$(wc -l < "$tmp/cal")
+	cal_top=$((SCREEN_HEIGHTH-CAL_FONT_SIZE*(cal_lines+1)))
+	_fbink -B GRAYB -k top=$cal_top,left=430,width=170,height=$((CAL_FONT_SIZE*(cal_lines+1)))
+	_fbink -B GRAY5 -k top=$cal_top,left=0,width=6,height=$CAL_FONT_SIZE
+	_fbink -B GRAY5 -C WHITE -t "bold=$F_MONO_BOLD,px=$CAL_FONT_SIZE,top=$cal_top,left=6,padding=HORIZONTAL,style=BOLD" "Пн  Вт  Ср  Чт  Пт  Сб  Нд"
+	_fbink -O -t regular=$F_MONO_REGULAR,bold=$F_MONO_BOLD,px=$CAL_FONT_SIZE,format,top=$((cal_top+CAL_FONT_SIZE)),left=6 < "$tmp/cal"
 	fbink -q -s
 done
