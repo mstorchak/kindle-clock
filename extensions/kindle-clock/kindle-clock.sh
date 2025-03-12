@@ -200,9 +200,9 @@ while :; do
 	_fbink -k top=220,left=0,width=600,height=580
 	_fbink -t "regular=$F_SERIF_REGULAR,px=64,top=230" -m "$DAY $(mon "$MONTH"), $(dow "$DOW")"
 
-	_fbink -B GRAYB -k top=500,left=430,width=170,height=300
-	_fbink -B GRAY5 -k top=500,left=0,width=6,height=50
-	_fbink -B GRAY5 -C WHITE -t "bold=$F_MONO_BOLD,px=50,top=500,left=6,padding=HORIZONTAL,style=BOLD" "Пн  Вт  Ср  Чт  Пт  Сб  Нд"
-	cal | _fbink -O -t regular=$F_MONO_REGULAR,bold=$F_MONO_BOLD,px=50,format,top=550,left=6
+	_fbink -B GRAYB -k top=450,left=430,width=170,height=350
+	_fbink -B GRAY5 -k top=450,left=0,width=6,height=50
+	_fbink -B GRAY5 -C WHITE -t "bold=$F_MONO_BOLD,px=50,top=450,left=6,padding=HORIZONTAL,style=BOLD" "Пн  Вт  Ср  Чт  Пт  Сб  Нд"
+	cal | _fbink -O -t regular=$F_MONO_REGULAR,bold=$F_MONO_BOLD,px=50,format,top=500,left=6
 	fbink -q -s
 done
