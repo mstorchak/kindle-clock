@@ -9,7 +9,7 @@
 	F_SANS_REGULAR=$FONTDIR/NotoSans-Regular.ttf
 	F_SANS_BOLD=$FONTDIR/NotoSans-Bold.ttf
 	F_MONO_REGULAR=$FONTDIR/NotoSansMono-Regular.ttf
-	F_MONO_BOLD=$FONTDIR/NotoSansMono-Bold.ttf
+	F_MONO_BOLD=$FONTDIR/NotoSansMono-Black.ttf
 }
 
 # config
