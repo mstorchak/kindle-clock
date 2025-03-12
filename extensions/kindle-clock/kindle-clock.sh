@@ -74,7 +74,7 @@ cal() {
 		d=$((i-day1+2))
 		[ $((d - DAY)) -eq 0 ] && c='**' || c=''
 		[ $d -le 0 ] && echo -n "    " || printf "%s%2s%s  " "$c" "$d" "$c"
-		[ $((i%7)) -eq 6 ] && echo
+		[ $((i%7)) -eq 6 ] && [ $i -ne $last ] && echo
 		i=$((i+1))
 	done
 	echo
