@@ -20,7 +20,7 @@ BAT_HIGH=90
 SCREEN_HEIGHTH=800
 SCREEN_WIDTH=600
 NTP_PERIOD=$((3600*6))
-CAL_FONT_SIZE=50
+CAL_FONT_SIZE=65
 
 dow() {
 	local d=""
@@ -73,7 +73,7 @@ cal() {
 	while [ $d -lt $last ]; do
 		d=$((i-day1+2))
 		[ $((d - DAY)) -eq 0 ] && c='**' || c=''
-		[ $d -le 0 ] && echo -n "    " || printf "%s%2s%s  " "$c" "$d" "$c"
+		[ $d -le 0 ] && echo -n "   " || printf "%s%2s%s " "$c" "$d" "$c"
 		[ $((i%7)) -eq 6 ] && [ $i -ne $last ] && echo
 		i=$((i+1))
 	done
@@ -206,9 +206,9 @@ while :; do
 	cal > "$tmp/cal"
 	cal_lines=$(wc -l < "$tmp/cal")
 	cal_top=$((SCREEN_HEIGHTH-CAL_FONT_SIZE*(cal_lines+1)))
-	_fbink -B GRAYB -k top=$cal_top,left=430,width=170,height=$((CAL_FONT_SIZE*(cal_lines+1)))
+	_fbink -B GRAYB -k top=$cal_top,left=425,width=175,height=$((CAL_FONT_SIZE*(cal_lines+1)))
 	_fbink -B GRAY5 -k top=$cal_top,left=0,width=6,height=$CAL_FONT_SIZE
-	_fbink -B GRAY5 -C WHITE -t "bold=$F_MONO_BOLD,px=$CAL_FONT_SIZE,top=$cal_top,left=6,padding=HORIZONTAL,style=BOLD" "Пн  Вт  Ср  Чт  Пт  Сб  Нд"
+	_fbink -B GRAY5 -C WHITE -t "bold=$F_MONO_BOLD,px=$CAL_FONT_SIZE,top=$cal_top,left=6,padding=HORIZONTAL,style=BOLD" "Пн Вт Ср Чт Пт Сб Нд"
 	_fbink -O -t regular=$F_MONO_REGULAR,bold=$F_MONO_BOLD,px=$CAL_FONT_SIZE,format,top=$((cal_top+CAL_FONT_SIZE)),left=6 < "$tmp/cal"
 	fbink -q -s
 done
