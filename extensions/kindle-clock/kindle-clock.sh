@@ -110,7 +110,7 @@ ntpsync() {
 
 # BEGIN
 
-tmp=/tmp/kindle-cal
+tmp=/tmp/kindle-clock
 rm -rf $tmp.*
 tmp=$(mktemp -d $tmp.XXXXXX)
 
