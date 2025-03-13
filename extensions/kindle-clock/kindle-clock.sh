@@ -9,7 +9,8 @@
 	F_SANS_REGULAR=$FONTDIR/NotoSans-Regular.ttf
 	F_SANS_BOLD=$FONTDIR/NotoSans-Bold.ttf
 	F_MONO_REGULAR=$FONTDIR/NotoSansMono-Regular.ttf
-	F_MONO_BOLD=$FONTDIR/NotoSansMono-Black.ttf
+	F_MONO_BOLD=$FONTDIR/NotoSansMono-Bold.ttf
+	F_MONO_BLACK=$FONTDIR/NotoSansMono-Black.ttf
 }
 
 # config
@@ -209,6 +210,6 @@ while :; do
 	_fbink -B GRAYB -k top=$cal_top,left=425,width=175,height=$((CAL_FONT_SIZE*(cal_lines+1)))
 	_fbink -B GRAY5 -k top=$cal_top,left=0,width=6,height=$CAL_FONT_SIZE
 	_fbink -B GRAY5 -C WHITE -t "bold=$F_MONO_BOLD,px=$CAL_FONT_SIZE,top=$cal_top,left=6,padding=HORIZONTAL,style=BOLD" "Пн Вт Ср Чт Пт Сб Нд"
-	_fbink -O -t regular=$F_MONO_REGULAR,bold=$F_MONO_BOLD,px=$CAL_FONT_SIZE,format,top=$((cal_top+CAL_FONT_SIZE)),left=6 < "$tmp/cal"
+	_fbink -O -t regular=$F_MONO_REGULAR,bold=$F_MONO_BLACK,px=$CAL_FONT_SIZE,format,top=$((cal_top+CAL_FONT_SIZE)),left=6 < "$tmp/cal"
 	fbink -q -s
 done
